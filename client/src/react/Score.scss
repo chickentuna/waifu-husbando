@@ -1,0 +1,19 @@
+.score {
+  font-size: 45px;
+  font-weight: 600;
+  text-shadow: 2px 2px 5px #003b28;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .symbol {
+    font-size: 90px;
+    margin-bottom: 4px;
+  }
+  &.boy {
+    color: #6ca0dc
+  }
+  &.girl {
+    color: #f8b9d4
+  }
+}

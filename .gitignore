@@ -1,0 +1,7 @@
+node_modules/
+.vscode/
+build/
+dist/
+archive/
+server/images/waifus/*
+server/images/husbandos/*
