@@ -26,8 +26,6 @@ export function Picker ({
   success = [],
   disabled = false
 }: PickerProps) {
-  // TODO: REMOVE PLACEHOLDER
-
   return (
     <>
       <div className='counter'>{curIdx + 1}/{total}</div>
