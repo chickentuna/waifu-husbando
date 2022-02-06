@@ -6,17 +6,21 @@ import { Socket, Server } from 'socket.io'
 let boy: Socket = null
 let girl: Socket = null
 const games = []
+let config = {}
 
-//TODO: fuck marry kill mode?
+// TODO: fuck marry kill mode?
+// TODO: stats?
+// TODO: battle royale mode
 
 function checkStart () {
   if (boy != null && girl != null) {
     log.info('Game start')
-    const game = new Game(boy, girl)
+    const game = new Game(boy, girl, config)
     games.push(game)
     game.init()
     boy = null
     girl = null
+    config = {}
   }
 }
 
@@ -53,6 +57,13 @@ function configureSocketServer (io: Server) {
         console.log('girl')
         girl = socket
         checkStart()
+      }
+    })
+
+    socket.on('config', (params) => {
+      config = {
+        ...config,
+        ...params
       }
     })
   })

@@ -8,15 +8,22 @@ const PICK_BEST_FROM = 3
 export type Type = 'waifu' | 'husbando'
 
 export type Pick = string[]
+export type GameMode = 'normal' | 'battle' | 'fmk'
+
+export interface GameOptions {
+  mode?: GameMode
+}
 
 export class Game {
   boy: Socket
   girl: Socket
   picks: Record<Type, Pick[]>
+  mode: GameMode
 
-  constructor (boy: Socket, girl: Socket) {
+  constructor (boy: Socket, girl: Socket, { mode = 'normal' }: GameOptions) {
     this.boy = boy
     this.girl = girl
+    this.mode = mode
   }
 
   async init () {
