@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io'
 import { imgs } from './imgs'
 import { shuffle } from './utils'
+import * as fs from 'fs'
 
 const JUDGE_COUNT = 10
 const PICK_BEST_FROM = 3
@@ -19,12 +20,23 @@ export class Game {
     this.girl = girl
   }
 
+  async logPicks (type, { choices }) {
+    for (let idx = 0; idx < choices.length; ++idx) {
+      const picksJSON = JSON.stringify(this.picks[type][idx])
+      const picked = choices[idx]
+      fs.appendFileSync(type + '.txt', picksJSON)
+      fs.appendFileSync(type + '.txt', choices.toString())
+    }
+  }
+
   async init () {
     this.boy.on('spouseData', spouseData => {
       this.girl.emit('spouseData', spouseData)
+      this.logPicks('waifu', spouseData)
     })
     this.girl.on('spouseData', spouseData => {
       this.boy.emit('spouseData', spouseData)
+      this.logPicks('husbando', spouseData)
     })
     this.boy.on('spouseScore', spouseScore => {
       this.girl.emit('spouseScore', spouseScore)
