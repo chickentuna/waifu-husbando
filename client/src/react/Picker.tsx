@@ -11,6 +11,7 @@ export interface PickerProps {
   pickLabel?: string
   neitherLabel?: string
   onPick: (idx: number) => void
+  onDelete?: (idx: number) => void
   success?: (CheckState | null)[]
   disabled?: boolean
 }
@@ -21,6 +22,7 @@ export function Picker ({
   total,
   type,
   onPick,
+  onDelete,
   pickLabel = 'PICK',
   neitherLabel = 'NEITHER',
   success = [],
@@ -48,6 +50,18 @@ export function Picker ({
             >
               {pickLabel}
             </button>
+            
+            {onDelete && (
+              <div>
+            <button
+              className='delete-button'
+              onClick={() => onDelete(i)}
+              disabled={disabled}
+            >
+              DELETE
+            </button>
+            </div>
+            )}
           </div>
         ))}
       </div>

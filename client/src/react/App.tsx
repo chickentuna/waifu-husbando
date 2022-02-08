@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import './App.scss'
 import io from '../socket'
 import { Picker } from './Picker'
@@ -105,6 +105,10 @@ class App extends Component<{}, State> {
     }
   }
 
+  handleDelete(idx) {
+
+  }
+
   handlePick (idx) {
     const nextIdx = this.state.curIdx + 1
     const nextChoices = [...this.state.choices, idx]
@@ -144,6 +148,8 @@ class App extends Component<{}, State> {
     const { state, sex: selectedSex, curIdx, picks, spouseData, animationPlaying, success, spouseScore, score, guesses } = this.state
     const myType = selectedSex === 'boy' ? 'waifu' : 'husbando'
     const spouseType = selectedSex === 'boy' ? 'husbando' : 'waifu'
+    // const [undeletedPics, setUndeletedPicks] = useState()
+
     return (
       <div className='App'>
         <header className='App-header'>
@@ -168,6 +174,7 @@ class App extends Component<{}, State> {
             <Picker
               pick={picks[curIdx]}
               onPick={(i) => this.handlePick(i)}
+              onDelete={(i) => this.handleDelete(i)}
               type={myType}
               curIdx={curIdx}
               neither
