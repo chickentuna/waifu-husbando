@@ -18,7 +18,16 @@ app.use(cors())
 app.use(accessLog)
 app.use(errorHandler)
 app.use(bodyParser())
-app.use(serve('../client/build'))
+
+app
+  .use(async (ctx, next) => {
+
+    if (ctx.request.path.startsWith('/audit')) {
+      ctx.request.path = '/'
+    }
+    await next()
+  })
+  .use(serve('../client/build'))
 
 app.on('error', errorLog)
 
