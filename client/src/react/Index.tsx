@@ -20,6 +20,9 @@ export function Index () {
           <Route path='/audit'>
             <AuditSelect />
           </Route>
+          <Route path='/solo'>
+            <App solo />
+          </Route>
           <Route path='/'>
             <App />
           </Route>

@@ -11,11 +11,11 @@ let boy: Player = null
 let girl: Player = null
 const games = []
 
-// TODO: scrape https://danbooru.donmai.us/posts?tags=mn_%28zig_r14%29&z=1
-// TODO: scrape google image "sexy anime boy" and some keyhole bra maid stuff while i'm there
-
 function checkStart () {
-  if (boy != null && girl != null) {
+  if (
+    (boy?.solo || girl?.solo) ||
+   (boy != null && girl != null)
+  ) {
     log.info('Game start')
     const game = new Game(boy, girl)
     games.push(game)
@@ -50,22 +50,22 @@ function configureSocketServer (io: Server) {
       }
     })
 
-    socket.on('boy', (selectedFolder) => {
+    socket.on('boy', ({ folder: selectedFolder, solo }) => {
       if (girl?.socket === socket) {
         girl = null
       }
       if (boy == null) {
-        boy = { socket, selectedFolder }
+        boy = { socket, selectedFolder, solo }
         checkStart()
       }
     })
 
-    socket.on('girl', (selectedFolder) => {
+    socket.on('girl', ({ folder: selectedFolder, solo }) => {
       if (boy?.socket === socket) {
         boy = null
       }
       if (girl == null) {
-        girl = { socket, selectedFolder }
+        girl = { socket, selectedFolder, solo }
         checkStart()
       }
     })

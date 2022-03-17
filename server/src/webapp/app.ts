@@ -40,6 +40,9 @@ app
       if (ctx.request.path.startsWith('/audit')) {
         ctx.request.path = '/'
       }
+      if (ctx.request.path.startsWith('/solo')) {
+        ctx.request.path = '/'
+      }
       await next()
     }
   })

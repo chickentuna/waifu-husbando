@@ -13,6 +13,7 @@ export function sexToType (sex:string): Type {
 }
 
 interface State {
+  solo: boolean
   picks?: string[][]
   sex?: string
   choices: number[]
@@ -33,8 +34,8 @@ interface State {
   ready: boolean
 }
 
-class App extends Component<{}, State> {
-  constructor (props: {}) {
+class App extends Component<{solo?: boolean}, State> {
+  constructor (props: {solo?: boolean}) {
     super(props)
     this.state = {
       choices: [],
@@ -43,7 +44,8 @@ class App extends Component<{}, State> {
       animationPlaying: false,
       success: [],
       ready: false,
-      sex: localStorage.getItem('sex')
+      sex: localStorage.getItem('sex'),
+      solo: props.solo ?? false
     }
   }
 
@@ -171,7 +173,9 @@ class App extends Component<{}, State> {
     return (
       <div className='App'>
         <header className='App-header'>
-          <h1 className='App-header-title'>Waifu ~ Husbando</h1>
+          {this.state.solo
+            ? <h1 className='App-header-title'>Waifu ~ Husbando (solo)</h1>
+            : <h1 className='App-header-title'>Waifu ~ Husbando</h1>}
         </header>
         <div className='App-content'>
           {state === 'lobby' && (
@@ -208,7 +212,7 @@ class App extends Component<{}, State> {
                     className='audit-button'
                     onClick={() => {
                       this.setState({ ready: true })
-                      io.emit(selectedSex, this.state.selectedFolder)
+                      io.emit(selectedSex, { folder: this.state.selectedFolder, solo: this.state.solo })
                     }}
                     disabled={this.state.ready || !this.state.folders?.[myType].includes(this.state.selectedFolder)}
                   >

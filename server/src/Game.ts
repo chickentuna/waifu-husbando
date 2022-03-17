@@ -1,10 +1,22 @@
 import { sexToType, shuffle } from './utils'
+import { Socket } from 'socket.io'
 import * as fs from 'fs'
 import { Player, Type } from './types'
 import { getUrls, logPick } from './db'
 
 const JUDGE_COUNT = 10
 const PICK_BEST_FROM = 3
+
+const dummySocket = {
+  on: () => {},
+  emit: () => {}
+} as any as Socket
+
+const dummy: Player = {
+  socket: dummySocket,
+  selectedFolder: 'dummy',
+  solo: false
+}
 
 export type Pick = string[]
 
@@ -20,17 +32,21 @@ export class Game {
   picks: Record<Type, Pick[]>
 
   constructor (boy: Player, girl: Player) {
-    this.boy = boy
-    this.girl = girl
+    this.boy = boy ?? dummy
+    this.girl = girl ?? dummy
   }
 
   async init () {
+    console.log('init')
     this.boy.socket.on('spouseData', (spouseData: SpouseData) => {
       this.girl.socket.emit('spouseData', spouseData)
       for (let i = 0; i < spouseData.picks.length; ++i) {
         const pick = spouseData.picks[i]
         const choice = spouseData.choices[i]
         logPick(sexToType('boy'), pick, choice, spouseData.folder)
+      }
+      if (this.boy.solo) {
+        this.start()
       }
     })
     this.girl.socket.on('spouseData', (spouseData:SpouseData) => {
@@ -48,6 +64,10 @@ export class Game {
       this.boy.socket.emit('spouseScore', spouseScore)
     })
 
+    this.start()
+  }
+
+  start () {
     this.picks = {
       waifu: [],
       husbando: []
