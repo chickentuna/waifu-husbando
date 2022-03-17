@@ -25,7 +25,7 @@ function checkStart () {
   }
 }
 
-const MAX_URLS_TO_SEND = 2
+const MAX_URLS_TO_SEND = 20
 
 const activeConnections = new Set()
 

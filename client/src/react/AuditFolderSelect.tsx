@@ -14,7 +14,7 @@ export function AuditFolderSelect ({ sex }: {sex:string}) {
   const [folders, setFolders] = useState([])
 
   useEffect(() => {
-    io.emit('folders', true)
+    io.emit('folders', false)
     io.once('folders', folders => setFolders(folders[sexToType(sex)]))
   }, [sex])
 
@@ -22,7 +22,7 @@ export function AuditFolderSelect ({ sex }: {sex:string}) {
     <div className='folder-select'>
       <Switch>
         <Route path={`${match.path}/:folder`}>
-          <Audit sex={sex} folders={folders} />
+          <Audit sex={sex} />
         </Route>
         <Route path={match.path}>
           <ButtonList options={

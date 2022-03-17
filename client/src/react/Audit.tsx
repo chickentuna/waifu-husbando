@@ -4,16 +4,22 @@ import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-
 import io from '../socket'
 import { Type } from './types'
 import ButtonList from './ButtonList'
+import { sexToType } from './utils'
 
 export interface AuditProps {
   sex: string
-  folders: string[]
 }
 
-export function Audit ({ sex, folders }: AuditProps) {
+export function Audit ({ sex }: AuditProps) {
   const [imageCount, setImageCount] = useState(0)
   const [urls, setUrls] = useState([])
+  const [folders, setFolders] = useState([])
   const { folder } = useParams<{folder: string}>()
+
+  useEffect(() => {
+    io.emit('folders', true)
+    io.once('folders', folders => setFolders(folders[sexToType(sex)]))
+  }, [sex])
 
   const type:Type = sex === 'boy' ? 'waifu' : 'husbando'
 

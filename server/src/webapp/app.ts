@@ -21,11 +21,27 @@ app.use(bodyParser())
 
 app
   .use(async (ctx, next) => {
+    if (ctx.request.path.includes('/img')) {
+      const id = +ctx.request.query.id
+      const type = ctx.request.query.type
+      const folder = ctx.request.query.folder
 
-    if (ctx.request.path.startsWith('/audit')) {
-      ctx.request.path = '/'
+      const source = images[folder][type]
+      if (source != null) {
+        const path = `images/${folder}/${type}s/${source[id]}`
+        const mimeType = mime.lookup(path)
+        if (fs.existsSync(path)) {
+          const src = fs.createReadStream(path)
+          ctx.response.set('content-type', mimeType)
+          ctx.body = src
+        }
+      }
+    } else {
+      if (ctx.request.path.startsWith('/audit')) {
+        ctx.request.path = '/'
+      }
+      await next()
     }
-    await next()
   })
   .use(serve('../client/build'))
 
@@ -38,29 +54,6 @@ const port = process.env.PORT || 3000
 server.listen(port, () => {
   log.info('Application started')
   log.info(`└── Listening on port: ${port}`)
-})
-
-// app.use(ctx => {
-
-// })
-
-app.use(ctx => {
-  if (ctx.request.path === '/img') {
-    const id = +ctx.request.query.id
-    const type = ctx.request.query.type
-    const folder = ctx.request.query.folder
-
-    const source = images[folder][type]
-    if (source != null) {
-      const path = `images/${folder}/${type}s/${source[id]}`
-      const mimeType = mime.lookup(path)
-      if (fs.existsSync(path)) {
-        const src = fs.createReadStream(path)
-        ctx.response.set('content-type', mimeType)
-        ctx.body = src
-      }
-    }
-  }
 })
 
 async function errorHandler (ctx: Koa.Context, next: () => Promise<any>) {
