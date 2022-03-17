@@ -1,3 +1,5 @@
+import { Type } from './types'
+
 export function randint (a:number, b:number):number {
   return Math.floor(a + Math.random() * (b - a))
 }
@@ -15,4 +17,8 @@ export function shuffle<T> (array: T[]): T[] {
     [array[i], array[j]] = [array[j], array[i]]
   }
   return array
+}
+
+export function sexToType (sex:string): Type {
+  return sex === 'boy' ? 'waifu' : 'husbando'
 }

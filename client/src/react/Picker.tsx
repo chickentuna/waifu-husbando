@@ -3,7 +3,7 @@ import { CheckIcon, CheckState } from './CheckIcon'
 import './Picker.scss'
 
 export interface PickerProps {
-  pick: number[]
+  pick: string[]
   neither?: boolean
   curIdx: number
   total: number
@@ -37,12 +37,21 @@ export function Picker ({
             key={v}
             className='image-button-wrapper'
           >
-            <div
-              className='image'
-              style={{ backgroundImage: `url(img?type=${type}&id=${v}&folder=${folder})` }}
-            >
-              {success[i] != null && <CheckIcon state={success[i]} />}
+
+            <div className='image-container'>
+              <div
+                className='image-background'
+                style={{ backgroundImage: `url(${v})` }}
+              />
+              <img
+                className='image'
+                src={v}
+              />
+              <div className='check-container'>
+                {success[i] != null && <CheckIcon state={success[i]} />}
+              </div>
             </div>
+
             <button
               className='pick-button'
               onClick={() => onPick(i)}

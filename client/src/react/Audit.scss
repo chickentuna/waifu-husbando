@@ -5,9 +5,6 @@
   padding: 15px;
 }
 
-.audit_image-wrapper {
-  width: 340px;
-}
 
 .audit_element {
   padding: 5px;
@@ -22,14 +19,40 @@
   align-items: center;
 }
 
-.audit_image {
-  background-size: contain;
-  padding-top: 100%;
-  background-repeat: no-repeat;
-  background-color: black;
-  background-position: center;
+.audit_image-wrapper {
+  display: flex;
   position: relative;
-  
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.audit_image-background {
+  /* Add the blur effect */
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+
+  /* Full height */
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  z-index: 0;
+  opacity: .88;
+}
+
+.audit_image {
+  width: 340px;
+  height: 340px;
+  object-fit: scale-down; 
+  z-index: 1;
 }
 
 .audit_button-wrapper {

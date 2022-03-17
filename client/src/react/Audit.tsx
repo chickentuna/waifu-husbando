@@ -13,32 +13,27 @@ const orange = '#ffd580'
 
 export function Audit ({ sex }: AuditProps) {
   const [imageCount, setImageCount] = useState(0)
-  const [imageIds, setImageIds] = useState([])
-  const [refreshIdx, setRefreshIdx] = useState(-1)
+  const [urls, setUrls] = useState([])
 
   const type:Type = sex === 'boy' ? 'waifu' : 'husbando'
 
   useEffect(() => {
     io.emit('audit', sex)
-    io.on('audit', ({imgCount, index}) => {
-      const ids = []
-      for (let i = 0; i < imgCount; ++i) {
-        ids.push(i)
-      }
+    io.on('audit', ({ urls, imgCount }) => {
       setImageCount(imgCount)
-      setImageIds(ids)
-      setRefreshIdx(index)
+      setUrls(urls)
     })
-    io.on('refresh', () => {
-      window.location.reload()
+    io.on('newAudit', ({ imgCount, next }) => {
+      setImageCount(imgCount)
+      setUrls((urls) => [...urls, next])
     })
   }, [sex])
 
-  function handleAudit (id, index, rating) {
-    io.emit('rate', { id, rating, type, refreshIdx})
-    const ids = [...imageIds]
-    ids.splice(index, 1)
-    setImageIds(ids)
+  function handleAudit (url, index, rating) {
+    io.emit('rate', { url, rating, type })
+    const newUrls = [...urls]
+    newUrls.splice(index, 1)
+    setUrls(newUrls)
     setImageCount(imageCount - 1)
   }
 
@@ -51,18 +46,21 @@ export function Audit ({ sex }: AuditProps) {
     { label: `💩 Ew / ${nopeEmoji} Refuse / 🐞 Error` }
   ]
 
-  const MAX_ON_SCREEN = 20
-  const block = imageIds.slice(0, MAX_ON_SCREEN)
-
   return (
     <><div className='audit_counter'>{imageCount} pics left</div>
       <div className='audit'>
-        {block.map((id, auditIndex) => (
-          <div className='audit_element' key={id}>
-            <div className='audit_image-wrapper' key={id}>
+        {urls.map((url, auditIndex) => (
+          <div className='audit_element' key={url}>
+            <div
+              className='audit_image-wrapper'
+            >
               <div
+                className='audit_image-background'
+                style={{ backgroundImage: `url(${url})` }}
+              />
+              <img
                 className='audit_image'
-                style={{ backgroundImage: `url(img?type=${type}&id=${id}&folder=audit)` }}
+                src={url}
               />
             </div>
             <div className='audit_button-wrapper'>
@@ -70,7 +68,7 @@ export function Audit ({ sex }: AuditProps) {
                 <button
                   key={ratingIdx}
                   className='audit_button'
-                  onClick={() => handleAudit(id, auditIndex, ratingIdx)}
+                  onClick={() => handleAudit(url, auditIndex, ratingIdx)}
                 >
                   {option.label}
                 </button>

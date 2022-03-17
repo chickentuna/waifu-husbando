@@ -21,16 +21,50 @@
   flex-flow: row nowrap;
 }
 
-.image-button-wrapper {
-  flex: 1;
-}
-.image {
+.image-container {
   background-size: contain;
   padding-top: 100%;
-  background-repeat: no-repeat;
-  background-color: black;
-  background-position: center;
   position: relative;
+  overflow: hidden;
+}
+
+.image-button-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.image-background {
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 0;
+  opacity: .88;
+  top:0;
+  left:0;
+}
+.image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  object-fit: scale-down; 
+  z-index: 1;
+}
+.check-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  z-index: 2;
 }
 
 .counter {
@@ -41,5 +75,8 @@
 @media (max-width: 900px) {
   .image-list {
     flex-flow: column wrap;
+    .image-button-wrapper {
+      width: 100%;
+    }
   }
 }

@@ -1,14 +1,22 @@
 # Run 
 
 ```sh
-docker run \
--d \
---pull always \
--p 3000:3000 \
--v $(pwd)/waifu-husbando-images:/var/www/html/server/images \
---name waifus \
---rm \
-poulton/waifu-husbando
+docker run -d -p 3000:3000 -v $(pwd)/waifu-husbando/db:/var/www/html/server/db -e DB_FILE=db/db.json --name waifus --rm poulton/waifu-husbando
 ```
 
-It is assumed that `./waifu-husbando-images/images` contains a folder `waifus` with image files for _him_ and a folder `husbandos` with image files for _her_.
+It is assumed that `./waifu-husbando-images/db` contains a file `db.json` with the following structure:
+
+```json
+{
+  "images": {
+    "audit": {
+      "waifu": [],
+      "husbando": []
+    }
+  }
+}
+```
+
+Where the `waifu` array contains image links for _him_ and the `husbando` array contains image links for _her_.
+
+

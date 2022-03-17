@@ -2,25 +2,21 @@ import log from './webapp/log'
 import { io } from './webapp/app'
 import { Game } from './Game'
 import { Socket, Server } from 'socket.io'
-import { refresh, images, refreshed } from './imgs'
 import * as fs from 'fs'
 import { Player, Type } from './types'
+import { getFolders, getUrls, moveUrl } from './db'
+import { sexToType } from './utils'
 
 let boy: Player = null
 let girl: Player = null
 const games = []
-const toAudit = images.audit
-
-// TODO: fuck marry kill mode?
 
 // TODO: scrape https://danbooru.donmai.us/posts?tags=mn_%28zig_r14%29&z=1
-
 // TODO: scrape google image "sexy anime boy" and some keyhole bra maid stuff while i'm there
 
 function checkStart () {
   if (boy != null && girl != null) {
     log.info('Game start')
-    refresh()
     const game = new Game(boy, girl)
     games.push(game)
     game.init()
@@ -66,24 +62,24 @@ function configureSocketServer (io: Server) {
     })
 
     socket.on('audit', (sex: string) => {
-      refresh()
-      const imgCount = toAudit[sex === 'boy' ? 'waifu' : 'husbando'].length
+      const urls = getUrls('audit', sexToType(sex))
       socket.emit('audit', {
-        imgCount,
-        index: refreshed.index
+        urls: urls.slice(0, 20),
+        imgCount: urls.length
       })
     })
 
-    socket.on('rate', ({ type, id, rating, refreshIdx }: {id: number, rating:number, type: Type, refreshIdx:number}) => {
-      if (refreshIdx !== refreshed.index) {
-        socket.emit('refresh')
-      } else {
-        const source = toAudit[type]
-        fs.renameSync(`images/audit/${type}s/${source[id]}`, `images/${rating}/${type}s/${source[id]}`)
+    socket.on('rate', ({ type, url, rating }: {url: string, rating:number, type: Type}) => {
+      moveUrl(url, 'audit', type, rating.toString())
+      const newUrls = getUrls('audit', type)
+      const next = newUrls[19]
+      if (next != null) {
+        socket.emit('nextAudit', { next, imgCount: newUrls.length })
       }
     })
 
-    socket.emit('folders', Object.keys(images).filter(key => images[key].waifu.length > 0 || images[key].husbando.length > 0))
+    const folders = getFolders()
+    socket.emit('folders', folders.filter(key => getUrls(key, 'waifu').length > 0 || getUrls(key, 'husbando').length > 0))
   })
 }
 

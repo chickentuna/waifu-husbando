@@ -7,14 +7,14 @@ import { Score } from './Score'
 import { Audit } from './Audit'
 
 interface State {
-  picks?: number[][]
+  picks?: string[][]
   sex?: string
   choices: number[]
   guesses?: number[]
   curIdx: number,
   state: string,
   spouseData?: {
-    picks: number[][],
+    picks: string[][],
     choices: number[],
     folder: string
   }
@@ -285,7 +285,7 @@ class App extends Component<{}, State> {
                         {spouseData.choices[i] !== -1 ? (
                           <div
                             className='recap-pic'
-                            style={{ backgroundImage: `url(img?type=${spouseType}&id=${pick[spouseData.choices[i]]}&folder=${spouseData.folder})` }}
+                            style={{ backgroundImage: `url(${pick[spouseData.choices[i]]})` }}
                           />
                         ) : (
                           <div
@@ -296,15 +296,15 @@ class App extends Component<{}, State> {
                       </div>
                       <div className='recap-rejected-wrapper'>
                         {pick
-                          .filter(id => id !== pick[spouseData.choices[i]])
-                          .map(id => (
+                          .filter(url => url !== pick[spouseData.choices[i]])
+                          .map(url => (
                             <div
-                              key={id}
+                              key={url}
                               className='recap-rejected'
                             >
                               <div
                                 className='recap-pic'
-                                style={{ backgroundImage: `url(img?type=${spouseType}&id=${id}&folder=${spouseData.folder})` }}
+                                style={{ backgroundImage: `url(${url})` }}
                               />
                             </div>
                           ))}

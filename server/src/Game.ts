@@ -1,8 +1,7 @@
-import { Socket } from 'socket.io'
-import { images } from './imgs'
 import { shuffle } from './utils'
 import * as fs from 'fs'
 import { Player, Type } from './types'
+import { getUrls } from './db'
 
 const JUDGE_COUNT = 10
 const PICK_BEST_FROM = 3
@@ -19,23 +18,12 @@ export class Game {
     this.girl = girl
   }
 
-  async logPicks (type, { choices }) {
-    for (let idx = 0; idx < choices.length; ++idx) {
-      const picksJSON = JSON.stringify(this.picks[type][idx])
-      const picked = choices[idx]
-      fs.appendFileSync(type + '.txt', picksJSON)
-      fs.appendFileSync(type + '.txt', choices.toString()) // TODO: continue this thing
-    }
-  }
-
   async init () {
     this.boy.socket.on('spouseData', spouseData => {
       this.girl.socket.emit('spouseData', spouseData)
-      this.logPicks('waifu', spouseData)
     })
     this.girl.socket.on('spouseData', spouseData => {
       this.boy.socket.emit('spouseData', spouseData)
-      this.logPicks('husbando', spouseData)
     })
     this.boy.socket.on('spouseScore', spouseScore => {
       this.girl.socket.emit('spouseScore', spouseScore)
@@ -49,12 +37,12 @@ export class Game {
       husbando: []
     }
     for (const { player, type } of [{ player: this.boy, type: 'waifu' }, { player: this.girl, type: 'husbando' }]) {
-      const idxs = images[player.selectedFolder][type].map((_, idx) => idx)
-      shuffle(idxs)
+      const urls = getUrls(player.selectedFolder, type)
+      shuffle(urls)
       for (let i = 0; i < JUDGE_COUNT; ++i) {
         const pick: Pick = []
         for (let n = 0; n < PICK_BEST_FROM; ++n) {
-          pick.push(idxs.pop())
+          pick.push(urls.pop() ?? getErrorUrl(type))
         }
         this.picks[type].push(pick)
       }
@@ -62,4 +50,7 @@ export class Game {
     this.boy.socket.emit('picks', this.picks.waifu)
     this.girl.socket.emit('picks', this.picks.husbando)
   }
+}
+function getErrorUrl (type: string): string {
+  return type === 'husbando' ? 'https://cdn130.picsart.com/291224346033201.jpg' : 'https://yt3.ggpht.com/ytc/AKedOLTZSv5NxjGySxgX4Qto4YPRhr4XM7_3Dk2DPGks=s900-c-k-c0x00ffffff-no-rj'
 }
