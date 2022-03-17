@@ -2,12 +2,17 @@ import log from './webapp/log'
 import { io } from './webapp/app'
 import { Game } from './Game'
 import { Socket, Server } from 'socket.io'
+import { toAudit } from './imgs'
 
 let boy: Socket = null
 let girl: Socket = null
 const games = []
 
-//TODO: fuck marry kill mode?
+// TODO: fuck marry kill mode?
+
+// TODO: scrape https://danbooru.donmai.us/posts?tags=mn_%28zig_r14%29&z=1
+
+// TODO: scrape google image "sexy anime boy" and some keyhole bra maid stuff while i'm there
 
 function checkStart () {
   if (boy != null && girl != null) {
@@ -54,6 +59,10 @@ function configureSocketServer (io: Server) {
         girl = socket
         checkStart()
       }
+    })
+
+    socket.on('audit', (sex: string) => {
+      socket.emit('audit', toAudit[sex === 'boy' ? 'waifu' : 'husbando'].length)
     })
   })
 }

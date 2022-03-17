@@ -4,6 +4,7 @@ import io from '../socket'
 import { Picker } from './Picker'
 import { CheckIcon, CheckState } from './CheckIcon'
 import { Score } from './Score'
+import { Audit } from './Audit'
 
 interface State {
   picks?: number[][]
@@ -144,12 +145,22 @@ class App extends Component<{}, State> {
     const { state, sex: selectedSex, curIdx, picks, spouseData, animationPlaying, success, spouseScore, score, guesses } = this.state
     const myType = selectedSex === 'boy' ? 'waifu' : 'husbando'
     const spouseType = selectedSex === 'boy' ? 'husbando' : 'waifu'
+
+    if (state === 'audit') {
+      return (
+        <Audit
+          sex={selectedSex}
+        />
+      )
+    }
+
     return (
       <div className='App'>
         <header className='App-header'>
           <h1 className='App-header-title'>Waifu ~ Husbando</h1>
         </header>
         <div className='App-content'>
+
           {state === 'lobby' && ['girl', 'boy'].map((sex, i) => (
             <button
               key={i}
@@ -163,7 +174,20 @@ class App extends Component<{}, State> {
               {sex === 'girl' ? '♀' : '♂'}
             </button>
           ))}
+          <div>
+            {state === 'lobby' && ['girl', 'boy'].map((sex, i) => (
 
+              <button
+                key={i}
+                className='audit-button'
+                onClick={() => {
+                  this.setState({ state: 'audit', sex })
+                }}
+              >
+                {sex === 'girl' ? 'Audit husbandos' : 'Audit waifus'}
+              </button>
+            ))}
+          </div>
           {state === 'judge' && picks != null && (
             <Picker
               pick={picks[curIdx]}

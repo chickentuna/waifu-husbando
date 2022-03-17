@@ -35,8 +35,11 @@ app.use(ctx => {
   if (ctx.request.path === '/img') {
     const id = +ctx.request.query.id
     const type = ctx.request.query.type
+    const audit = ctx.request.query.audit
+    log.info(audit)
     if (imgs[type] != null) {
-      const path = `images/${type}s/${imgs[type][id]}`
+      const folder = audit ? 'audit' : 'images'
+      const path = `${folder}/${type}s/${imgs[type][id]}`
       const mimeType = mime.lookup(path)
       if (fs.existsSync(path)) {
         const src = fs.createReadStream(path)
