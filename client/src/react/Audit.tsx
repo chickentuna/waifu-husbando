@@ -46,6 +46,19 @@ export function Audit ({ sex }: AuditProps) {
     { label: `💩 Ew / ${nopeEmoji} Refuse / 🐞 Error` }
   ]
 
+  function handleMouseMove (e:React.MouseEvent<HTMLImageElement, MouseEvent>) {
+    const element = e.currentTarget
+    const rect = element.getBoundingClientRect()
+    const px = 100 * (e.clientX - rect.x) / rect.width
+    const py = 100 * (e.clientY - rect.y) / rect.height
+    element.style.objectPosition = `${px}% ${py}%`
+  }
+
+  function handleMouseOut (e:React.MouseEvent<HTMLImageElement, MouseEvent>) {
+    const element = e.currentTarget
+    element.style.objectPosition = '50% 50%'
+  }
+
   return (
     <><div className='audit_counter'>{imageCount} pics left</div>
       <div className='audit'>
@@ -60,6 +73,8 @@ export function Audit ({ sex }: AuditProps) {
               />
               <img
                 className='audit_image'
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseOut}
                 src={url}
               />
             </div>

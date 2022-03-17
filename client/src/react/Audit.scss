@@ -25,12 +25,6 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-
-  z-index: 0;
-  &:hover {
-    transform: scale(1.5);
-    z-index: 1;
-  }
 }
 
 .audit_image-background {
@@ -44,7 +38,7 @@
   position: absolute;
   top: 0;
   left: 0;
-
+  
   /* Center and scale the image nicely */
   background-position: center;
   background-repeat: no-repeat;
@@ -59,12 +53,16 @@
   height: 400px;
   object-fit: scale-down; 
   z-index: 1;
+
+  &:hover {
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
 }
 
 .audit_button-wrapper {
   display: flex;
   flex-flow: column;
-  transition: all 0.2s ease;
 }
 .audit_button {
   padding: 10px;
