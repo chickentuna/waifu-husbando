@@ -1,6 +1,7 @@
 import { setupMaster } from 'cluster'
 import * as fs from 'fs'
 import { Type } from './types'
+import log from './webapp/log'
 
 const dbFilePath = process.env.DB_FILE ?? 'db.json'
 
@@ -37,11 +38,12 @@ function get () {
   return new Accessor<object>(db)
 }
 
-function init () {
+export function reload () {
   if (!fs.existsSync(dbFilePath)) {
     fs.writeFileSync(dbFilePath, '{}')
   }
   db = JSON.parse(fs.readFileSync(dbFilePath).toString())
+  log.debug('Image DB loaded')
 }
 
 function save () {
@@ -65,4 +67,4 @@ export function getFolders (): string[] {
   return [...Object.keys(get().getObj('images').value)]
 }
 
-init()
+reload()

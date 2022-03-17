@@ -4,7 +4,7 @@ import { Game } from './Game'
 import { Socket, Server } from 'socket.io'
 import * as fs from 'fs'
 import { Player, Type } from './types'
-import { getFolders, getUrls, moveUrl } from './db'
+import { getFolders, getUrls, moveUrl, reload } from './db'
 import { sexToType } from './utils'
 
 let boy: Player = null
@@ -25,12 +25,21 @@ function checkStart () {
   }
 }
 
+const activeConnections = new Set()
+
 function configureSocketServer (io: Server) {
   io.on('connection', (socket: Socket) => {
+    if (activeConnections.size === 0) {
+      reload()
+    }
+
     log.debug('user connected', { ip: socket.handshake.address })
+    activeConnections.add(socket.id)
 
     socket.on('disconnect', () => {
       log.debug('user disconnected', socket.handshake.address)
+      activeConnections.delete(socket.id)
+
       if (boy?.socket === socket) {
         boy = null
       }
