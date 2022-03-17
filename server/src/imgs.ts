@@ -2,6 +2,10 @@ import * as fs from 'fs'
 
 // convert '*.png[800x>]' -set filename:base "%[basename]" "%[filename:base].png"
 
+export const refreshed = {
+  index: 0
+}
+
 export type ImageFolder = {
   waifu: string[]
   husbando: string[]
@@ -44,6 +48,7 @@ export function refresh () {
         .forEach(d => images[folder][type].push(d))
     }
   }
+  refreshed.index++
 }
 
 refresh()

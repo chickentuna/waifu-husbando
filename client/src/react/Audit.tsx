@@ -14,23 +14,28 @@ const orange = '#ffd580'
 export function Audit ({ sex }: AuditProps) {
   const [imageCount, setImageCount] = useState(0)
   const [imageIds, setImageIds] = useState([])
+  const [refreshIdx, setRefreshIdx] = useState(-1)
 
   const type:Type = sex === 'boy' ? 'waifu' : 'husbando'
 
   useEffect(() => {
     io.emit('audit', sex)
-    io.on('audit', (imageCount) => {
-      setImageCount(imageCount)
+    io.on('audit', ({imgCount, index}) => {
       const ids = []
-      for (let i = 0; i < imageCount; ++i) {
+      for (let i = 0; i < imgCount; ++i) {
         ids.push(i)
       }
+      setImageCount(imgCount)
       setImageIds(ids)
+      setRefreshIdx(index)
+    })
+    io.on('refresh', () => {
+      location.reload()
     })
   }, [sex])
 
   function handleAudit (id, index, rating) {
-    io.emit('rate', { id, rating, type })
+    io.emit('rate', { id, rating, type, refreshIdx})
     const ids = [...imageIds]
     ids.splice(index, 1)
     setImageIds(ids)
@@ -43,7 +48,7 @@ export function Audit ({ sex }: AuditProps) {
     { label: type === 'husbando' ? '🥵 Humanah' : '🥵 Bonjour madame' },
     { label: '💖 Hot' },
     { label: '🤗 Cute / 😐 Ineffective' },
-    { label: `💩 Meh / ${nopeEmoji} Nope / 🐞 Error` }
+    { label: `💩 Ew / ${nopeEmoji} Refuse / 🐞 Error` }
   ]
 
   const MAX_ON_SCREEN = 20
