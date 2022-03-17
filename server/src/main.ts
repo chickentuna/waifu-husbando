@@ -2,11 +2,14 @@ import log from './webapp/log'
 import { io } from './webapp/app'
 import { Game } from './Game'
 import { Socket, Server } from 'socket.io'
-import { toAudit } from './imgs'
+import { refresh, images } from './imgs'
+import * as fs from 'fs'
+import { Player, Type } from './types'
 
-let boy: Socket = null
-let girl: Socket = null
+let boy: Player = null
+let girl: Player = null
 const games = []
+const toAudit = images.audit
 
 // TODO: fuck marry kill mode?
 
@@ -17,6 +20,7 @@ const games = []
 function checkStart () {
   if (boy != null && girl != null) {
     log.info('Game start')
+    refresh()
     const game = new Game(boy, girl)
     games.push(game)
     game.init()
@@ -31,40 +35,48 @@ function configureSocketServer (io: Server) {
 
     socket.on('disconnect', () => {
       log.debug('user disconnected', socket.handshake.address)
-      if (boy === socket) {
+      if (boy?.socket === socket) {
         boy = null
       }
-      if (girl === socket) {
+      if (girl?.socket === socket) {
         girl = null
       }
     })
 
-    socket.on('boy', () => {
-      if (girl === socket) {
+    socket.on('boy', (selectedFolder) => {
+      if (girl?.socket === socket) {
         girl = null
       }
       if (boy == null) {
         console.log('boy')
-        boy = socket
+        boy = { socket, selectedFolder }
         checkStart()
       }
     })
 
-    socket.on('girl', () => {
-      if (boy === socket) {
+    socket.on('girl', (selectedFolder) => {
+      if (boy?.socket === socket) {
         boy = null
       }
       if (girl == null) {
         console.log('girl')
-        girl = socket
+        girl = { socket, selectedFolder }
         checkStart()
       }
     })
 
     socket.on('audit', (sex: string) => {
+      refresh()
       const imgCount = toAudit[sex === 'boy' ? 'waifu' : 'husbando'].length
       socket.emit('audit', imgCount)
     })
+
+    socket.on('rate', ({ type, id, rating }: {id: number, rating:number, type: Type}) => {
+      const source = toAudit[type]
+      fs.renameSync(`images/audit/${type}s/${source[id]}`, `images/${rating}/${type}s/${source[id]}`)
+    })
+
+    socket.emit('folders', Object.keys(images).filter(key => images[key].waifu.length > 0 || images[key].husbando.length > 0))
   })
 }
 

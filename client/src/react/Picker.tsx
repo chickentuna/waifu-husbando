@@ -13,6 +13,7 @@ export interface PickerProps {
   onPick: (idx: number) => void
   success?: (CheckState | null)[]
   disabled?: boolean
+  folder: string
 }
 export function Picker ({
   pick,
@@ -24,7 +25,8 @@ export function Picker ({
   pickLabel = 'PICK',
   neitherLabel = 'NEITHER',
   success = [],
-  disabled = false
+  disabled = false,
+  folder
 }: PickerProps) {
   return (
     <>
@@ -37,7 +39,7 @@ export function Picker ({
           >
             <div
               className='image'
-              style={{ backgroundImage: `url(img?type=${type}&id=${v})` }}
+              style={{ backgroundImage: `url(img?type=${type}&id=${v}&folder=${folder})` }}
             >
               {success[i] != null && <CheckIcon state={success[i]} />}
             </div>

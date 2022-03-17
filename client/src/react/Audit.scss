@@ -6,11 +6,20 @@
 }
 
 .audit_image-wrapper {
-  width: 300px;
+  width: 340px;
 }
 
 .audit_element {
   padding: 5px;
+}
+
+.audit_counter {
+  font-size: 25px;
+  font-weight: 600;
+  text-shadow: 2px 2px 5px #003b28;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .audit_image {

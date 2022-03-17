@@ -15,12 +15,15 @@ interface State {
   state: string,
   spouseData?: {
     picks: number[][],
-    choices: number[]
+    choices: number[],
+    folder: string
   }
   animationPlaying: boolean,
   success: (CheckState | null)[]
   spouseScore?: number
   score?: number
+  folders: string[]
+  selectedFolder?: string
 }
 
 class App extends Component<{}, State> {
@@ -31,12 +34,12 @@ class App extends Component<{}, State> {
       curIdx: 0,
       state: 'lobby',
       animationPlaying: false,
-      success: []
+      success: [],
+      folders: []
     }
   }
 
   componentDidMount () {
-    io.emit(this.state.sex)
     io.on('picks', picks => {
       this.setState({
         picks,
@@ -49,6 +52,10 @@ class App extends Component<{}, State> {
     })
     io.on('spouseData', spouseData => this.setState({ spouseData }))
     io.on('spouseScore', spouseScore => this.setState({ spouseScore }))
+    io.on('folders', folders => this.setState({
+      folders,
+      selectedFolder: localStorage.getItem('selectedFolder') ?? '0'
+    }))
   }
 
   handleGuess (idx) {
@@ -121,7 +128,8 @@ class App extends Component<{}, State> {
       })
       io.emit('spouseData', {
         choices: nextChoices,
-        picks: this.state.picks
+        picks: this.state.picks,
+        folder: this.state.selectedFolder
       })
     } else {
       this.setState({
@@ -141,8 +149,17 @@ class App extends Component<{}, State> {
     }, 0)
   }
 
+  handleFolderChange (e) {
+    const newSelectedFolder = e.target.value
+    console.log(newSelectedFolder)
+    this.setState({
+      selectedFolder: newSelectedFolder
+    })
+    localStorage.setItem('selectedFolder', newSelectedFolder)
+  }
+
   render () {
-    const { state, sex: selectedSex, curIdx, picks, spouseData, animationPlaying, success, spouseScore, score, guesses } = this.state
+    const { state, sex: selectedSex, curIdx, picks, spouseData, animationPlaying, success, spouseScore, score, guesses, selectedFolder } = this.state
     const myType = selectedSex === 'boy' ? 'waifu' : 'husbando'
     const spouseType = selectedSex === 'boy' ? 'husbando' : 'waifu'
 
@@ -160,34 +177,62 @@ class App extends Component<{}, State> {
           <h1 className='App-header-title'>Waifu ~ Husbando</h1>
         </header>
         <div className='App-content'>
+          {state === 'lobby' && (
+            <>
+              <div>
 
-          {state === 'lobby' && ['girl', 'boy'].map((sex, i) => (
-            <button
-              key={i}
-              className='sex-button'
-              disabled={selectedSex === sex}
-              onClick={() => {
-                this.setState({ sex })
-                io.emit(sex)
-              }}
-            >
-              {sex === 'girl' ? '♀' : '♂'}
-            </button>
-          ))}
-          <div>
-            {state === 'lobby' && ['girl', 'boy'].map((sex, i) => (
+                {this.state.folders.map((folderName, idx) => (
+                  <div
+                    key={folderName}
+                  >
+                    <label
+                      htmlFor={`folder_${idx}`}
+                    >
+                      <input
+                        id={`folder_${idx}`}
+                        type='radio'
+                        value={folderName}
+                        checked={this.state.selectedFolder === folderName}
+                        onChange={(e) => this.handleFolderChange(e)}
+                      />
+                      {getFolderLabel(folderName)}
+                    </label>
+                  </div>
+                ))}
 
-              <button
-                key={i}
-                className='audit-button'
-                onClick={() => {
-                  this.setState({ state: 'audit', sex })
-                }}
-              >
-                {sex === 'girl' ? 'Audit husbandos' : 'Audit waifus'}
-              </button>
-            ))}
-          </div>
+              </div>
+              <div>
+                {['girl', 'boy'].map((sex, i) => (
+                  <button
+                    key={i}
+                    className='sex-button'
+                    disabled={selectedSex === sex}
+                    onClick={() => {
+                      this.setState({ sex })
+                      io.emit(sex, this.state.selectedFolder)
+                    }}
+                  >
+                    {sex === 'girl' ? '♀' : '♂'}
+                  </button>
+                ))}
+              </div>
+              <div>
+                {['girl', 'boy'].map((sex, i) => (
+
+                  <button
+                    key={i}
+                    className='audit-button'
+                    onClick={() => {
+                      this.setState({ state: 'audit', sex })
+                    }}
+                  >
+                    {sex === 'girl' ? 'Audit husbandos' : 'Audit waifus'}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
           {state === 'judge' && picks != null && (
             <Picker
               pick={picks[curIdx]}
@@ -196,6 +241,7 @@ class App extends Component<{}, State> {
               curIdx={curIdx}
               neither
               total={picks.length}
+              folder={selectedFolder}
             />
           )}
 
@@ -211,6 +257,7 @@ class App extends Component<{}, State> {
               pickLabel='SELECT'
               disabled={animationPlaying}
               success={success}
+              folder={spouseData.folder}
             />
           ))}
 
@@ -238,7 +285,7 @@ class App extends Component<{}, State> {
                         {spouseData.choices[i] !== -1 ? (
                           <div
                             className='recap-pic'
-                            style={{ backgroundImage: `url(img?type=${spouseType}&id=${pick[spouseData.choices[i]]})` }}
+                            style={{ backgroundImage: `url(img?type=${spouseType}&id=${pick[spouseData.choices[i]]}&folder=${spouseData.folder})` }}
                           />
                         ) : (
                           <div
@@ -257,7 +304,7 @@ class App extends Component<{}, State> {
                             >
                               <div
                                 className='recap-pic'
-                                style={{ backgroundImage: `url(img?type=${spouseType}&id=${id})` }}
+                                style={{ backgroundImage: `url(img?type=${spouseType}&id=${id}&folder=${spouseData.folder})` }}
                               />
                             </div>
                           ))}
@@ -279,3 +326,16 @@ function getCheckState (truth: number, guess: number): CheckState {
 }
 
 export default App
+function getFolderLabel (folderName: string): string {
+  if (folderName === '0') {
+    return 'Humanah'
+  } else if (folderName === '1') {
+    return 'Hot'
+  } else if (folderName === '2') {
+    return 'Cute or ineffective'
+  } else if (folderName === '3') {
+    return 'Bad'
+  } else {
+    return folderName
+  }
+}
