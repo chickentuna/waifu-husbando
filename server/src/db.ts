@@ -67,6 +67,19 @@ export function getUrls (selectedFolder: string, type: string): string[] {
   return null
 }
 
+interface PickEvent {
+  type: Type
+  choices: string[]
+  pick: number
+  folder: string
+}
+
+export function logPick (type: Type, choices: string[], pick: number, folder: string) {
+  const log = get().getObj('stats').getArray<PickEvent>('picks').value
+  log.push({ type, choices, pick, folder })
+  save()
+}
+
 export function getFolders (): string[] {
   return [...Object.keys(get().getObj('images').value)]
 }

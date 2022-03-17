@@ -1,12 +1,18 @@
-import { shuffle } from './utils'
+import { sexToType, shuffle } from './utils'
 import * as fs from 'fs'
 import { Player, Type } from './types'
-import { getUrls } from './db'
+import { getUrls, logPick } from './db'
 
 const JUDGE_COUNT = 10
 const PICK_BEST_FROM = 3
 
 export type Pick = string[]
+
+interface SpouseData {
+  picks: string[][]
+  choices: number[]
+  folder: string
+}
 
 export class Game {
   boy: Player
@@ -19,11 +25,21 @@ export class Game {
   }
 
   async init () {
-    this.boy.socket.on('spouseData', spouseData => {
+    this.boy.socket.on('spouseData', (spouseData: SpouseData) => {
       this.girl.socket.emit('spouseData', spouseData)
+      for (let i = 0; i < spouseData.picks.length; ++i) {
+        const pick = spouseData.picks[i]
+        const choice = spouseData.choices[i]
+        logPick(sexToType('boy'), pick, choice, spouseData.folder)
+      }
     })
-    this.girl.socket.on('spouseData', spouseData => {
+    this.girl.socket.on('spouseData', (spouseData:SpouseData) => {
       this.boy.socket.emit('spouseData', spouseData)
+      for (let i = 0; i < spouseData.picks.length; ++i) {
+        const pick = spouseData.picks[i]
+        const choice = spouseData.choices[i]
+        logPick(sexToType('girl'), pick, choice, spouseData.folder)
+      }
     })
     this.boy.socket.on('spouseScore', spouseScore => {
       this.girl.socket.emit('spouseScore', spouseScore)
