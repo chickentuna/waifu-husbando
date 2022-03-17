@@ -3,7 +3,7 @@ import './Audit.scss'
 import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom'
 import io from '../socket'
 import { Type } from './types'
-import ButtonList from './ButtonList'
+import ButtonList from './list/ButtonList'
 import { sexToType } from './utils'
 
 export interface AuditProps {

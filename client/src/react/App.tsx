@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import './App.scss'
 import io from '../socket'
-import { Picker } from './Picker'
+import './App.scss'
 import { CheckIcon, CheckState } from './CheckIcon'
+import RadioList from './list/RadioList'
+import { Picker } from './Picker'
 import { Score } from './Score'
-import { Audit } from './Audit'
 import SexPicker from './SexPicker'
 import { Type } from './types'
 
@@ -155,9 +155,8 @@ class App extends Component<{}, State> {
     }, 0)
   }
 
-  handleFolderChange (e) {
+  handleFolderChange (e: React.ChangeEvent<HTMLInputElement>) {
     const newSelectedFolder = e.target.value
-    console.log(newSelectedFolder)
     this.setState({
       selectedFolder: newSelectedFolder
     })
@@ -186,26 +185,21 @@ class App extends Component<{}, State> {
                 disabled={this.state.ready}
               />
 
-              <div>
-                {selectedSex != null && this.state.folders?.[myType].map((folderName, idx) => (
-                  <div
-                    key={folderName}
-                  >
-                    <label
-                      htmlFor={`folder_${idx}`}
-                    >
-                      <input
-                        disabled={this.state.ready}
-                        id={`folder_${idx}`}
-                        type='radio'
-                        value={folderName}
-                        checked={this.state.selectedFolder === folderName}
-                        onChange={(e) => this.handleFolderChange(e)}
-                      />
-                      {getFolderLabel(folderName)}
-                    </label>
-                  </div>
-                ))}
+              <div className='radio-options'>
+                {selectedSex != null && this.state.folders != null && (
+                  <RadioList
+                    options={
+                      this.state.folders[myType].map(folderName => ({
+                        label: folderName,
+                        value: folderName
+                      }))
+                    }
+                    onChange={(e) => this.handleFolderChange(e)}
+                    disabled={this.state.ready}
+                    isChecked={(option) => this.state.selectedFolder === option.label}
+                  />
+                )}
+
               </div>
 
               {selectedSex != null && (
@@ -315,20 +309,6 @@ class App extends Component<{}, State> {
 
 function getCheckState (truth: number, guess: number): CheckState {
   return truth === guess ? 'true' : truth === -1 ? 'n/a' : 'false'
-}
-
-function getFolderLabel (folderName: string): string {
-  if (folderName === '0') {
-    return 'Humanah'
-  } else if (folderName === '1') {
-    return 'Hot'
-  } else if (folderName === '2') {
-    return 'Cute'
-  } else if (folderName === '3') {
-    return 'Unappealing'
-  } else {
-    return folderName
-  }
 }
 
 export default App

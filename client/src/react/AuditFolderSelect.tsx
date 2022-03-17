@@ -1,13 +1,13 @@
-// import { basename } from 'path'
 import React, { useEffect, useState } from 'react'
 import {
   Link, Route, Switch, useRouteMatch
 } from 'react-router-dom'
 import io from '../socket'
 import { Audit } from './Audit'
-import ButtonList from './ButtonList'
+import ButtonList from './list/ButtonList'
 import './Audit.scss'
 import { sexToType } from './App'
+import LinkList from './list/LinkList'
 
 export function AuditFolderSelect ({ sex }: {sex:string}) {
   const match = useRouteMatch()
@@ -25,7 +25,7 @@ export function AuditFolderSelect ({ sex }: {sex:string}) {
           <Audit sex={sex} />
         </Route>
         <Route path={match.path}>
-          <ButtonList options={
+          <LinkList options={
             folders.map(folder => ({
               label: folder,
               link: `${match.url}/${folder}`
