@@ -4,4 +4,6 @@ server/dist
 server/archive
 .git
 *.code-workspace
+*.code-workspace.tpl
 server/images/
+db.json
