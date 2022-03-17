@@ -81,15 +81,14 @@ function configureSocketServer (io: Server) {
     })
 
     socket.on('rate', ({ type, url, destination, folder }: {url: string, destination:string, type: Type, folder:string}) => {
-      let nextIdx
-      if (destination !== 'skip') {
-        moveUrl(url, folder, type, destination)
-        nextIdx = MAX_URLS_TO_SEND - 1
+      if (destination === 'skip') {
+        moveUrl(url, folder, type, folder) // Go to back of the queue
       } else {
-        nextIdx = MAX_URLS_TO_SEND
+        moveUrl(url, folder, type, destination)
       }
+
       const newUrls = getUrls(folder, type)
-      const next = newUrls[nextIdx]
+      const next = newUrls[MAX_URLS_TO_SEND - 1]
       if (next != null) {
         socket.emit('nextAudit', { next, imgCount: newUrls.length })
       }
