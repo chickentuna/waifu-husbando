@@ -9,12 +9,13 @@ import {
 } from 'react-router-dom'
 import { AuditFolderSelect } from './AuditFolderSelect'
 import ButtonList from './ButtonList'
+import './Audit.scss'
 
 export function AuditSelect () {
   const match = useRouteMatch()
   return (
 
-    <div>
+    <div className='sex-select'>
       <Switch>
         <Route path={`${match.path}/boy`}>
           <AuditFolderSelect sex='boy' />
@@ -24,10 +25,14 @@ export function AuditSelect () {
         </Route>
         <Route path={match.path}>
           <ButtonList options={
-            ['boy', 'girl'].map(s => ({
-              label: s,
-              link: `${match.url}/${s}`
-            }))
+            [{
+              label: '♂',
+              link: `${match.url}/boy`
+            },
+            {
+              label: '♀',
+              link: `${match.url}/girl`
+            }]
           }
           />
         </Route>

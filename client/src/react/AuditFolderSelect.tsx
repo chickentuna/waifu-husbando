@@ -6,6 +6,7 @@ import {
 import io from '../socket'
 import { Audit } from './Audit'
 import ButtonList from './ButtonList'
+import './Audit.scss'
 
 export function AuditFolderSelect ({ sex }: {sex:string}) {
   const match = useRouteMatch()
@@ -17,7 +18,7 @@ export function AuditFolderSelect ({ sex }: {sex:string}) {
   }, [])
 
   return (
-    <div>
+    <div className='folder-select'>
       <Switch>
         <Route path={`${match.path}/:folder`}>
           <Audit sex={sex} />

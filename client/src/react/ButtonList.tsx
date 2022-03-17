@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import './ButtonList.scss'
 
@@ -8,19 +8,22 @@ export interface ButtonPropsList {
 }
 
 function ButtonList ({ onClick, options }:ButtonPropsList) {
+  function wrap (node:ReactNode, idx: number, link?:string):ReactNode {
+    return link ? (
+      <Link
+        key={idx}
+        className='button-link-wrapper'
+        to={link}
+      >
+        {node}
+      </Link>
+    ) : node
+  }
+
   return (
     <div className='button-wrapper'>
       {options.map((option, idx) =>
-        option.link != null ? (
-          <Link
-            key={idx}
-            className='button'
-            onClick={() => onClick?.(idx)}
-            to={option.link}
-          >
-            {option.label}
-          </Link>
-        ) : (
+        wrap((
           <button
             key={idx}
             className='button'
@@ -28,7 +31,7 @@ function ButtonList ({ onClick, options }:ButtonPropsList) {
           >
             {option.label}
           </button>
-        )
+        ), idx, option.link)
       )}
     </div>
   )
