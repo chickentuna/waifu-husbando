@@ -23,7 +23,7 @@ export function Audit ({ sex }: AuditProps) {
       setImageCount(imgCount)
       setUrls(urls)
     })
-    io.on('newAudit', ({ imgCount, next }) => {
+    io.on('nextAudit', ({ imgCount, next }) => {
       setImageCount(imgCount)
       setUrls((urls) => [...urls, next])
     })
