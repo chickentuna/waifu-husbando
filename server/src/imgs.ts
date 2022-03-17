@@ -1,11 +1,11 @@
 import * as fs from 'fs'
 
 export const imgs = {
-  waifu: fs.readdirSync('images/waifus/', { withFileTypes: true }).map(d => d.name),
-  husbando: fs.readdirSync('images/husbandos/', { withFileTypes: true }).map(d => d.name)
+  waifu: fs.readdirSync('images/active/waifus/', { withFileTypes: true }).map(d => d.name),
+  husbando: fs.readdirSync('images/active/husbandos/', { withFileTypes: true }).map(d => d.name)
 }
 
 export const toAudit = {
-  waifu: fs.readdirSync('audit/waifus/', { withFileTypes: true }).map(d => d.name),
-  husbando: fs.readdirSync('audit/husbandos/', { withFileTypes: true }).map(d => d.name)
+  waifu: fs.readdirSync('images/audit/waifus/', { withFileTypes: true }).map(d => d.name),
+  husbando: fs.readdirSync('images/audit/husbandos/', { withFileTypes: true }).map(d => d.name)
 }

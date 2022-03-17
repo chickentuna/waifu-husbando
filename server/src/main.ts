@@ -62,7 +62,8 @@ function configureSocketServer (io: Server) {
     })
 
     socket.on('audit', (sex: string) => {
-      socket.emit('audit', toAudit[sex === 'boy' ? 'waifu' : 'husbando'].length)
+      const imgCount = toAudit[sex === 'boy' ? 'waifu' : 'husbando'].length
+      socket.emit('audit', imgCount)
     })
   })
 }

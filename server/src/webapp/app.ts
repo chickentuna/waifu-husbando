@@ -9,7 +9,7 @@ import errorLog from './errorLog'
 import log from './log'
 import mime from 'mime-types'
 import * as fs from 'fs'
-import { imgs } from '../imgs'
+import { imgs, toAudit } from '../imgs'
 import serve from 'koa-static'
 
 const app = new Koa()
@@ -36,10 +36,12 @@ app.use(ctx => {
     const id = +ctx.request.query.id
     const type = ctx.request.query.type
     const audit = ctx.request.query.audit
-    log.info(audit)
-    if (imgs[type] != null) {
-      const folder = audit ? 'audit' : 'images'
-      const path = `${folder}/${type}s/${imgs[type][id]}`
+    const source = audit ? toAudit[type] : imgs[type]
+    log.debug(source)
+    if (source != null) {
+      const folder = audit ? 'audit' : 'active'
+      const path = `images/${folder}/${type}s/${source[id]}`
+      log.debug(path)
       const mimeType = mime.lookup(path)
       if (fs.existsSync(path)) {
         const src = fs.createReadStream(path)

@@ -3,5 +3,4 @@ node_modules/
 build/
 dist/
 archive/
-server/images/waifus/*
-server/images/husbandos/*
+server/images/

@@ -4,5 +4,4 @@ server/dist
 server/archive
 .git
 *.code-workspace
-server/images/waifus/*
-server/images/husbandos/*
+server/images/
