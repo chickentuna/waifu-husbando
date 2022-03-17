@@ -1,0 +1,45 @@
+.pick-button {
+  font-size: 25px;
+  font-weight: 700;
+  padding: 10px;
+  margin: 20px;
+  width: 200px;
+}
+.neither-button {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 6px;
+  margin: 20px;
+  width: 100px;
+}
+
+
+.image-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row nowrap;
+}
+
+.image-button-wrapper {
+  flex: 1;
+}
+.image {
+  background-size: contain;
+  padding-top: 100%;
+  background-repeat: no-repeat;
+  background-color: black;
+  background-position: center;
+  position: relative;
+}
+
+.counter {
+  margin-bottom: 10px;
+  font-size: 30px;
+}
+
+@media (max-width: 900px) {
+  .image-list {
+    flex-flow: column wrap;
+  }
+}

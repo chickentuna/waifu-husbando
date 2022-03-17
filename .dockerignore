@@ -1,0 +1,8 @@
+node_modules
+client/build
+server/dist
+server/archive
+.git
+*.code-workspace
+server/images/waifus/*
+server/images/husbandos/*
