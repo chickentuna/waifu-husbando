@@ -20,7 +20,7 @@ Response Headers
 ${Object.entries(ctx.response.headers).map(([name, value]) => `\t${name}: ${value}`).join('\n')}
 
 Response payload
-\t${JSON.stringify(ctx.response.body, null, 2)}`
+\t${ctx.response.body}`
 
   log.log('error', message, { error })
 }
