@@ -1,20 +1,20 @@
 FROM node:14.18
 
-# Install dependencies
+# Client
 WORKDIR /var/www/html/client
 COPY client/package.json .
 COPY client/package-lock.json .
 RUN npm ci
 
+WORKDIR /var/www/html/client
+COPY client .
+RUN [ "npm", "run", "build" ]
+
+# Server
 WORKDIR /var/www/html/server
 COPY server/package.json .
 COPY server/package-lock.json .
 RUN npm ci
-
-# Bundle app source and build
-WORKDIR /var/www/html/client
-COPY client .
-RUN [ "npm", "run", "build" ]
 
 WORKDIR /var/www/html/server
 COPY server .
