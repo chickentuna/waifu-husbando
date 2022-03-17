@@ -55,7 +55,6 @@ function configureSocketServer (io: Server) {
         girl = null
       }
       if (boy == null) {
-        console.log('boy')
         boy = { socket, selectedFolder }
         checkStart()
       }
@@ -66,7 +65,6 @@ function configureSocketServer (io: Server) {
         boy = null
       }
       if (girl == null) {
-        console.log('girl')
         girl = { socket, selectedFolder }
         checkStart()
       }

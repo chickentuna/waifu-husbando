@@ -13,15 +13,13 @@ function ButtonList ({ onClick, options }:ButtonListProps) {
       <ThingList
         options={options}
         render={(option, idx) => (
-          <>
-            <button
-              key={idx}
-              className='button'
-              onClick={() => onClick?.(idx)}
-            >
-              {option}
-            </button>
-          </>
+          <button
+            key={idx}
+            className='button'
+            onClick={() => onClick?.(idx)}
+          >
+            {option.label}
+          </button>
         )}
       />
     </div>
