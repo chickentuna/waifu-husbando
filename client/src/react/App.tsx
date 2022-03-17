@@ -53,7 +53,7 @@ class App extends Component<{}, State> {
     io.on('spouseData', spouseData => this.setState({ spouseData }))
     io.on('spouseScore', spouseScore => this.setState({ spouseScore }))
     io.on('folders', folders => this.setState({
-      folders,
+      folders: folders.filter(name => name !== 'audit' && name !== '4'),
       selectedFolder: localStorage.getItem('selectedFolder') ?? '0'
     }))
   }
@@ -139,7 +139,7 @@ class App extends Component<{}, State> {
     }
   }
 
-  getScore ():number {
+  getScore (): number {
     return this.state.spouseData.choices.reduce((acc, truth, idx) => {
       const guess = this.state.guesses[idx]
       if (getCheckState(truth, guess) === 'false') {
@@ -325,17 +325,18 @@ function getCheckState (truth: number, guess: number): CheckState {
   return truth === guess ? 'true' : truth === -1 ? 'n/a' : 'false'
 }
 
-export default App
 function getFolderLabel (folderName: string): string {
   if (folderName === '0') {
     return 'Humanah'
   } else if (folderName === '1') {
     return 'Hot'
   } else if (folderName === '2') {
-    return 'Cute or ineffective'
+    return 'Cute'
   } else if (folderName === '3') {
-    return 'Bad'
+    return 'Unappealing'
   } else {
     return folderName
   }
 }
+
+export default App

@@ -42,8 +42,9 @@ export function Audit ({ sex }: AuditProps) {
   const options = [
     { label: type === 'husbando' ? '🥵 Humanah' : '🥵 Bonjour madame' },
     { label: '💖 Hot' },
-    { label: '🤗 Cute / 😐 Ineffective' },
-    { label: `💩 Ew / ${nopeEmoji} Refuse / 🐞 Error` }
+    { label: '🤗 Cute' },
+    { label: '😐 Unappealing' },
+    { label: `${nopeEmoji} Refuse / 🐞 Error` }
   ]
 
   function handleMouseMove (e:React.MouseEvent<HTMLImageElement, MouseEvent>) {
