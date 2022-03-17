@@ -7,9 +7,10 @@ import ButtonList from './ButtonList'
 
 export interface AuditProps {
   sex: string
+  folders: string[]
 }
 
-export function Audit ({ sex }: AuditProps) {
+export function Audit ({ sex, folders }: AuditProps) {
   const [imageCount, setImageCount] = useState(0)
   const [urls, setUrls] = useState([])
   const { folder } = useParams<{folder: string}>()
@@ -28,25 +29,16 @@ export function Audit ({ sex }: AuditProps) {
     })
   }, [folder, sex])
 
+  const options = folders.filter(name => name !== folder).map(name => ({ label: name }))
+
   function handleAudit (url, index, rating) {
-    io.emit('rate', { url, destination: rating.toString(), type })
+    const destination = options[rating]?.label ?? 'skip'
+    io.emit('rate', { url, destination, type, folder })
     const newUrls = [...urls]
     newUrls.splice(index, 1)
     setUrls(newUrls)
     setImageCount(imageCount - 1)
   }
-
-  const nopeEmoji = type === 'husbando' ? '🙅‍♀️' : '🙅‍♂️'
-
-  // TODO: move to server side, we need full freedom on destination folders
-  const options = [
-    { label: type === 'husbando' ? '🥵 Humanah' : '🥵 Bonjour madame' },
-    { label: '💖 Hot' },
-    { label: '🤗 Cute' },
-    { label: '😐 Unappealing' },
-    { label: `${nopeEmoji} Refuse / 🐞 Error` }
-  ]
-
   function handleMouseMove (e:React.MouseEvent<HTMLImageElement, MouseEvent>) {
     const element = e.currentTarget
     const rect = element.getBoundingClientRect()
@@ -80,7 +72,7 @@ export function Audit ({ sex }: AuditProps) {
               />
             </div>
             <ButtonList
-              options={options}
+              options={[...options, { label: 'skip' }]}
               onClick={idx => handleAudit(url, auditIndex, idx)}
             />
           </div>

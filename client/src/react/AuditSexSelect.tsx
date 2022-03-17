@@ -26,11 +26,11 @@ export function AuditSelect () {
         <Route path={match.path}>
           <ButtonList options={
             [{
-              label: '♂',
+              label: 'Audit waifus',
               link: `${match.url}/boy`
             },
             {
-              label: '♀',
+              label: 'Audit husbandos',
               link: `${match.url}/girl`
             }]
           }

@@ -6,6 +6,11 @@ import { CheckIcon, CheckState } from './CheckIcon'
 import { Score } from './Score'
 import { Audit } from './Audit'
 import SexPicker from './SexPicker'
+import { Type } from './types'
+
+export function sexToType (sex:string): Type {
+  return sex === 'boy' ? 'waifu' : 'husbando'
+}
 
 interface State {
   picks?: string[][]
@@ -23,8 +28,9 @@ interface State {
   success: (CheckState | null)[]
   spouseScore?: number
   score?: number
-  folders: string[]
+  folders?: Record<Type, string[]>
   selectedFolder?: string
+  ready: boolean
 }
 
 class App extends Component<{}, State> {
@@ -36,7 +42,8 @@ class App extends Component<{}, State> {
       state: 'lobby',
       animationPlaying: false,
       success: [],
-      folders: []
+      ready: false,
+      sex: localStorage.getItem('sex')
     }
   }
 
@@ -53,10 +60,8 @@ class App extends Component<{}, State> {
     })
     io.on('spouseData', spouseData => this.setState({ spouseData }))
     io.on('spouseScore', spouseScore => this.setState({ spouseScore }))
-    io.on('folders', folders => this.setState({
-      folders: folders.filter(name => name !== 'audit' && name !== '4'),
-      selectedFolder: localStorage.getItem('selectedFolder') ?? '0'
-    }))
+    io.emit('folders', false)
+    io.once('folders', (folders: { waifu: string[], husbando: string[] }) => this.setState({ folders }))
   }
 
   handleGuess (idx) {
@@ -164,14 +169,6 @@ class App extends Component<{}, State> {
     const myType = selectedSex === 'boy' ? 'waifu' : 'husbando'
     const spouseType = selectedSex === 'boy' ? 'husbando' : 'waifu'
 
-    if (state === 'audit') {
-      return (
-        <Audit
-          sex={selectedSex}
-        />
-      )
-    }
-
     return (
       <div className='App'>
         <header className='App-header'>
@@ -180,9 +177,17 @@ class App extends Component<{}, State> {
         <div className='App-content'>
           {state === 'lobby' && (
             <>
-              <div>
+              <SexPicker
+                onClick={(sex:string) => {
+                  localStorage.setItem('sex', sex)
+                  this.setState({ sex })
+                }}
+                selected={selectedSex}
+                disabled={this.state.ready}
+              />
 
-                {this.state.folders.map((folderName, idx) => (
+              <div>
+                {selectedSex != null && this.state.folders?.[myType].map((folderName, idx) => (
                   <div
                     key={folderName}
                   >
@@ -190,6 +195,7 @@ class App extends Component<{}, State> {
                       htmlFor={`folder_${idx}`}
                     >
                       <input
+                        disabled={this.state.ready}
                         id={`folder_${idx}`}
                         type='radio'
                         value={folderName}
@@ -200,29 +206,22 @@ class App extends Component<{}, State> {
                     </label>
                   </div>
                 ))}
-
               </div>
-              <SexPicker
-                onClick={(sex:string) => {
-                  this.setState({ sex })
-                  io.emit(sex, this.state.selectedFolder)
-                }}
-                selected={selectedSex}
-              />
-              <div>
-                {['girl', 'boy'].map((sex, i) => (
 
+              {selectedSex != null && (
+                <div>
                   <button
-                    key={i}
                     className='audit-button'
                     onClick={() => {
-                      this.setState({ state: 'audit', sex })
+                      this.setState({ ready: true })
+                      io.emit(selectedSex, this.state.selectedFolder)
                     }}
+                    disabled={this.state.ready || !this.state.folders?.[myType].includes(this.state.selectedFolder)}
                   >
-                    {sex === 'girl' ? 'Audit husbandos' : 'Audit waifus'}
+                  READY
                   </button>
-                ))}
-              </div>
+                </div>
+              )}
             </>
           )}
 

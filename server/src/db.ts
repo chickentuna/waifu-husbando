@@ -15,7 +15,7 @@ class Accessor<T> {
   }
 
   private get<V> (key: string, defaulter:() => V): Accessor<V> {
-    if (this.node[key] == null) {
+    if (this.node[key] === undefined) {
       this.node[key] = defaulter()
     }
     return new Accessor(this.node[key])
@@ -60,7 +60,11 @@ export function moveUrl (url:string, fromFolder:string, type:Type, toFolder: str
 }
 
 export function getUrls (selectedFolder: string, type: string): string[] {
-  return [...get().getObj('images').getObj(selectedFolder).getArray<string>(type).value]
+  const arr = get().getObj('images').getObj(selectedFolder).getArray<string>(type).value
+  if (arr != null) {
+    return [...arr]
+  }
+  return null
 }
 
 export function getFolders (): string[] {

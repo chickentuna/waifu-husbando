@@ -1,3 +1,5 @@
+import { Type } from './types'
+
 export function randint (a:number, b:number):number {
   return Math.floor(a + Math.random() * (b - a))
 }
@@ -29,4 +31,8 @@ export function unlerp (a, b, v) {
 
 export function lerp (a, b, u) {
   return a + (b - a) * u
+}
+
+export function sexToType (sex:string): Type {
+  return sex === 'boy' ? 'waifu' : 'husbando'
 }

@@ -25,6 +25,8 @@ function checkStart () {
   }
 }
 
+const MAX_URLS_TO_SEND = 2
+
 const activeConnections = new Set()
 
 function configureSocketServer (io: Server) {
@@ -73,23 +75,38 @@ function configureSocketServer (io: Server) {
     socket.on('audit', ({ sex, folder }: {sex: string, folder: string}) => {
       const urls = getUrls(folder, sexToType(sex))
       socket.emit('audit', {
-        urls: urls.slice(0, 20),
+        urls: urls.slice(0, MAX_URLS_TO_SEND),
         imgCount: urls.length
       })
     })
 
     socket.on('rate', ({ type, url, destination, folder }: {url: string, destination:string, type: Type, folder:string}) => {
-      moveUrl(url, folder, type, destination)
+      let nextIdx
+      if (destination !== 'skip') {
+        moveUrl(url, folder, type, destination)
+        nextIdx = MAX_URLS_TO_SEND - 1
+      } else {
+        nextIdx = MAX_URLS_TO_SEND
+      }
       const newUrls = getUrls(folder, type)
-      const next = newUrls[19]
+      const next = newUrls[nextIdx]
       if (next != null) {
         socket.emit('nextAudit', { next, imgCount: newUrls.length })
       }
     })
 
-    socket.on('folders', () => {
+    socket.on('folders', (full) => {
       const folders = getFolders()
-      socket.emit('folders', folders.filter(key => getUrls(key, 'waifu').length > 0 || getUrls(key, 'husbando').length > 0))
+
+      let waifuFolders = folders.filter(key => getUrls(key, 'waifu') != null)
+      let husbandoFolders = folders.filter(key => getUrls(key, 'husbando') != null)
+
+      if (!full) {
+        waifuFolders = waifuFolders.filter(key => getUrls(key, 'waifu').length > 0)
+        husbandoFolders = husbandoFolders.filter(key => getUrls(key, 'husbando').length > 0)
+      }
+
+      socket.emit('folders', { waifu: waifuFolders, husbando: husbandoFolders })
     })
   })
 }

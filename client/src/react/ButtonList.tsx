@@ -14,6 +14,7 @@ function ButtonList ({ onClick, options }:ButtonPropsList) {
         key={idx}
         className='button-link-wrapper'
         to={link}
+        style={{ textDecoration: 'none' }}
       >
         {node}
       </Link>
