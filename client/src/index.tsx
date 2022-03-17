@@ -3,5 +3,6 @@ import ReactDOM from 'react-dom'
 
 import './index.scss'
 import App from './react/App'
+import { Index } from './react/Index'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<Index />, document.getElementById('root'))

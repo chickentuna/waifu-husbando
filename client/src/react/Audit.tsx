@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import './Audit.scss'
+import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom'
 import io from '../socket'
 import { Type } from './types'
+import ButtonList from './ButtonList'
 
 export interface AuditProps {
   sex: string
 }
 
-const green = '#7ac142'
-const red = '#ff6666'
-const orange = '#ffd580'
-
 export function Audit ({ sex }: AuditProps) {
   const [imageCount, setImageCount] = useState(0)
   const [urls, setUrls] = useState([])
+  const { folder } = useParams<{folder: string}>()
 
   const type:Type = sex === 'boy' ? 'waifu' : 'husbando'
 
   useEffect(() => {
-    io.emit('audit', sex)
+    io.emit('audit', { sex, folder })
     io.on('audit', ({ urls, imgCount }) => {
       setImageCount(imgCount)
       setUrls(urls)
@@ -27,10 +26,10 @@ export function Audit ({ sex }: AuditProps) {
       setImageCount(imgCount)
       setUrls((urls) => [...urls, next])
     })
-  }, [sex])
+  }, [folder, sex])
 
   function handleAudit (url, index, rating) {
-    io.emit('rate', { url, rating, type })
+    io.emit('rate', { url, destination: rating.toString(), type })
     const newUrls = [...urls]
     newUrls.splice(index, 1)
     setUrls(newUrls)
@@ -39,6 +38,7 @@ export function Audit ({ sex }: AuditProps) {
 
   const nopeEmoji = type === 'husbando' ? '🙅‍♀️' : '🙅‍♂️'
 
+  // TODO: move to server side, we need full freedom on destination folders
   const options = [
     { label: type === 'husbando' ? '🥵 Humanah' : '🥵 Bonjour madame' },
     { label: '💖 Hot' },
@@ -79,17 +79,10 @@ export function Audit ({ sex }: AuditProps) {
                 src={url}
               />
             </div>
-            <div className='audit_button-wrapper'>
-              {options.map((option, ratingIdx) => (
-                <button
-                  key={ratingIdx}
-                  className='audit_button'
-                  onClick={() => handleAudit(url, auditIndex, ratingIdx)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+            <ButtonList
+              options={options}
+              onClick={idx => handleAudit(url, auditIndex, idx)}
+            />
           </div>
         ))}
       </div>

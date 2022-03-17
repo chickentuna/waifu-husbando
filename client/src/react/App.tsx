@@ -5,6 +5,7 @@ import { Picker } from './Picker'
 import { CheckIcon, CheckState } from './CheckIcon'
 import { Score } from './Score'
 import { Audit } from './Audit'
+import SexPicker from './SexPicker'
 
 interface State {
   picks?: string[][]
@@ -201,21 +202,13 @@ class App extends Component<{}, State> {
                 ))}
 
               </div>
-              <div>
-                {['girl', 'boy'].map((sex, i) => (
-                  <button
-                    key={i}
-                    className='sex-button'
-                    disabled={selectedSex === sex}
-                    onClick={() => {
-                      this.setState({ sex })
-                      io.emit(sex, this.state.selectedFolder)
-                    }}
-                  >
-                    {sex === 'girl' ? '♀' : '♂'}
-                  </button>
-                ))}
-              </div>
+              <SexPicker
+                onClick={(sex:string) => {
+                  this.setState({ sex })
+                  io.emit(sex, this.state.selectedFolder)
+                }}
+                selected={selectedSex}
+              />
               <div>
                 {['girl', 'boy'].map((sex, i) => (
 

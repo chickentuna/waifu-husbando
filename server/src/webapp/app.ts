@@ -31,6 +31,10 @@ server.listen(port, () => {
   log.info(`└── Listening on port: ${port}`)
 })
 
+// app.use(ctx => {
+
+// })
+
 app.use(ctx => {
   if (ctx.request.path === '/img') {
     const id = +ctx.request.query.id

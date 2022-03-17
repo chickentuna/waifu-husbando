@@ -70,25 +70,27 @@ function configureSocketServer (io: Server) {
       }
     })
 
-    socket.on('audit', (sex: string) => {
-      const urls = getUrls('audit', sexToType(sex))
+    socket.on('audit', ({ sex, folder }: {sex: string, folder: string}) => {
+      const urls = getUrls(folder, sexToType(sex))
       socket.emit('audit', {
         urls: urls.slice(0, 20),
         imgCount: urls.length
       })
     })
 
-    socket.on('rate', ({ type, url, rating }: {url: string, rating:number, type: Type}) => {
-      moveUrl(url, 'audit', type, rating.toString())
-      const newUrls = getUrls('audit', type)
+    socket.on('rate', ({ type, url, destination, folder }: {url: string, destination:string, type: Type, folder:string}) => {
+      moveUrl(url, folder, type, destination)
+      const newUrls = getUrls(folder, type)
       const next = newUrls[19]
       if (next != null) {
         socket.emit('nextAudit', { next, imgCount: newUrls.length })
       }
     })
 
-    const folders = getFolders()
-    socket.emit('folders', folders.filter(key => getUrls(key, 'waifu').length > 0 || getUrls(key, 'husbando').length > 0))
+    socket.on('folders', () => {
+      const folders = getFolders()
+      socket.emit('folders', folders.filter(key => getUrls(key, 'waifu').length > 0 || getUrls(key, 'husbando').length > 0))
+    })
   })
 }
 
