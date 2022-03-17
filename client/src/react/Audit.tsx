@@ -30,7 +30,7 @@ export function Audit ({ sex }: AuditProps) {
       setRefreshIdx(index)
     })
     io.on('refresh', () => {
-      location.reload()
+      window.location.reload()
     })
   }, [sex])
 
