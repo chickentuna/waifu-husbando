@@ -56,6 +56,9 @@ export class Game {
         const choice = spouseData.choices[i]
         logPick(sexToType('girl'), pick, choice, spouseData.folder)
       }
+      if (this.girl.solo) {
+        this.start()
+      }
     })
     this.boy.socket.on('spouseScore', spouseScore => {
       this.girl.socket.emit('spouseScore', spouseScore)
