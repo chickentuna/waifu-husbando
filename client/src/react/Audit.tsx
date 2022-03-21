@@ -78,7 +78,7 @@ export function Audit ({ sex }: AuditProps) {
               />
             </div>
             <ButtonList
-              options={[...options, { label: 'skip' }]}
+              options={[{ label: 'skip' }, ...options]}
               onClick={idx => handleAudit(url, auditIndex, idx)}
             />
           </div>

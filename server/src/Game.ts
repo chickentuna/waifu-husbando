@@ -14,7 +14,7 @@ const dummySocket = {
 
 const dummy: Player = {
   socket: dummySocket,
-  selectedFolder: 'dummy',
+  selectedFolder: 'audit',
   solo: false
 }
 
