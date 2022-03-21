@@ -35,7 +35,7 @@ export function Audit ({ sex }: AuditProps) {
     })
   }, [folder, sex])
 
-  const options = folders.filter(name => name !== folder).map(name => ({ label: name }))
+  const options = [{label: 'skip'}, ...folders.filter(name => name !== folder).map(name => ({ label: name }))]
 
   function handleAudit (url, index, rating) {
     const destination = options[rating]?.label ?? 'skip'
@@ -78,7 +78,7 @@ export function Audit ({ sex }: AuditProps) {
               />
             </div>
             <ButtonList
-              options={[{ label: 'skip' }, ...options]}
+              options={options}
               onClick={idx => handleAudit(url, auditIndex, idx)}
             />
           </div>
