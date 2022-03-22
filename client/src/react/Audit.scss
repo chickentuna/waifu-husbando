@@ -19,45 +19,11 @@
   align-items: center;
 }
 
-.audit_image-wrapper {
-  display: flex;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.audit_image-background {
-  /* Add the blur effect */
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
-
-  /* Full height */
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  
-  /* Center and scale the image nicely */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  z-index: 0;
-  opacity: .88;
-}
-
-.audit_image {
+.audit_image-container {
+  margin-bottom: 5px;
   width: 400px;
   height: 400px;
-  object-fit: scale-down; 
-  z-index: 1;
-
-  &:hover {
-    object-fit: cover;
-    object-position: 50% 50%;
-  }
+  position: 'relative';
 }
 
 .sex-select {

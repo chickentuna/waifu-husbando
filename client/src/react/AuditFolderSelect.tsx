@@ -4,10 +4,10 @@ import {
 } from 'react-router-dom'
 import io from '../socket'
 import { Audit } from './Audit'
-import ButtonList from './list/ButtonList'
+import ButtonList from './components/list/ButtonList'
 import './Audit.scss'
 import { sexToType } from './App'
-import LinkList from './list/LinkList'
+import LinkList from './components/list/LinkList'
 
 export function AuditFolderSelect ({ sex }: {sex:string}) {
   const match = useRouteMatch()

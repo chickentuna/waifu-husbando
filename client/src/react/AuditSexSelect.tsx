@@ -4,8 +4,8 @@ import {
 } from 'react-router-dom'
 import './Audit.scss'
 import { AuditFolderSelect } from './AuditFolderSelect'
-import ButtonList from './list/ButtonList'
-import LinkList from './list/LinkList'
+import ButtonList from './components/list/ButtonList'
+import LinkList from './components/list/LinkList'
 
 export function AuditSelect () {
   const match = useRouteMatch()

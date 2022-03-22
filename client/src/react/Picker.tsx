@@ -1,5 +1,6 @@
 import React from 'react'
 import { CheckIcon, CheckState } from './CheckIcon'
+import { Picture } from './components/Picture'
 import './Picker.scss'
 
 export interface PickerProps {
@@ -34,23 +35,13 @@ export function Picker ({
       <div className='image-list'>
         {pick.map((v, i) => (
           <div
-            key={v}
+            key={i}
             className='image-button-wrapper'
           >
 
-            <div className='image-container'>
-              <div
-                className='image-background'
-                style={{ backgroundImage: `url(${v})` }}
-              />
-              <img
-                className='image'
-                src={v}
-              />
-              <div className='check-container'>
-                {success[i] != null && <CheckIcon state={success[i]} />}
-              </div>
-            </div>
+            <Picture url={v}>
+              {success[i] != null && <CheckIcon state={success[i]} />}
+            </Picture>
 
             <button
               className='pick-button'
