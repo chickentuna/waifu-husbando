@@ -49,8 +49,16 @@ class App extends Component<{solo?: boolean}, State> {
     }
   }
 
+  preload (urls: string[]) {
+    urls.forEach(url => {
+      const img = new Image()
+      img.src = url
+    })
+  }
+
   componentDidMount () {
     io.on('picks', picks => {
+      this.preload(picks.flat())
       this.setState({
         picks,
         state: 'judge',
@@ -60,7 +68,10 @@ class App extends Component<{solo?: boolean}, State> {
         choices: []
       })
     })
-    io.on('spouseData', spouseData => this.setState({ spouseData }))
+    io.on('spouseData', spouseData => {
+      this.preload(spouseData.picks.flat())
+      this.setState({ spouseData })
+    })
     io.on('spouseScore', spouseScore => this.setState({ spouseScore }))
     io.emit('folders', false)
     io.once('folders', (folders: { waifu: string[], husbando: string[] }) => this.setState({ folders }))

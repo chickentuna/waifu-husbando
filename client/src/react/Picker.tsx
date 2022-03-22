@@ -35,7 +35,7 @@ export function Picker ({
       <div className='image-list'>
         {pick.map((v, i) => (
           <div
-            key={i}
+            key={`${i}_${v}`}
             className='image-button-wrapper'
           >
 
