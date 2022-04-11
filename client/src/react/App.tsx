@@ -204,7 +204,9 @@ class App extends Component<{solo?: boolean}, State> {
                 {selectedSex != null && this.state.folders != null && (
                   <RadioList
                     options={
-                      this.state.folders[myType].map(folderName => ({
+                      this.state.folders[myType]
+                      .filter(folderName => !folderName.startsWith('_'))
+                      .map(folderName => ({
                         label: folderName,
                         value: folderName
                       }))
