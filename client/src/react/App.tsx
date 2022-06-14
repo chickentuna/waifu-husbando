@@ -205,7 +205,7 @@ class App extends Component<{solo?: boolean}, State> {
                   <RadioList
                     options={
                       this.state.folders[myType]
-                      .filter(folderName => !folderName.startsWith('_'))
+                      .filter(folderName => this.state.solo || !folderName.startsWith('_'))
                       .map(folderName => ({
                         label: folderName,
                         value: folderName
