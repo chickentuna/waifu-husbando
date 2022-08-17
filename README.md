@@ -20,3 +20,6 @@ It is assumed that `./waifu-husbando-images/db` contains a file `db.json` with t
 Where the `waifu` array contains image links for _him_ and the `husbando` array contains image links for _her_.
 
 
+Sorry about the gender normatism.
+
+
