@@ -52,7 +52,7 @@ app.on('error', errorLog)
 
 const server = http.createServer(app.callback())
 const io = socketIo(server)
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3003
 
 server.listen(port, () => {
   log.info('Application started')

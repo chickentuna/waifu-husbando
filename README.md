@@ -1,7 +1,7 @@
 # Run 
 
 ```sh
-docker run -d -p 3000:3000 -v $(pwd)/waifu-husbando/db:/var/www/html/server/db -e DB_FILE=db/db.json --name waifus --rm poulton/waifu-husbando
+docker run -d -p 3003:3003 -v $(pwd)/waifu-husbando/db:/var/www/html/server/db -e DB_FILE=db/db.json --name waifus --rm poulton/waifu-husbando
 ```
 
 It is assumed that `./waifu-husbando-images/db` contains a file `db.json` with the following structure:

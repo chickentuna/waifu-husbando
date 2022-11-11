@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3003
 
 const socket = io(`:${port}`, {
   transports: ['websocket']

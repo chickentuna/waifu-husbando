@@ -26,7 +26,7 @@ COPY server .
 RUN npm run build
 
 # Expose port
-EXPOSE 3000
+EXPOSE 3003
 
 # Run bot
 ENTRYPOINT [ "node", "dist/main.js" ]
