@@ -15,7 +15,7 @@ export function AuditFolderSelect ({ sex }: {sex:string}) {
 
   useEffect(() => {
     io.emit('folders', false)
-    io.once('folders', folders => setFolders(folders[sexToType(sex)]))
+    io.once('folders', folders => setFolders(folders[sexToType(sex)].filter(f => !f.startsWith('_')))
   }, [sex])
 
   return (
